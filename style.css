@@ -1,0 +1,51 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.btns{
+    display:flex;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+
+button{
+    width: 120px;
+}
+
+.poke_list {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 10px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.poke-card {
+    display: flex;
+    flex-direction: column;  
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 170px;
+    box-sizing: border-box;
+    border: 1px solid darkslategray;
+}
+
+.poke-pic {
+    width: 130px;
+    height: 130px;
+    flex: 1;
+    object-fit: contain;
+    margin-bottom: 10px;
+    
+}
+
+.poke-text {
+    margin: 0;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-transform: capitalize;
+}
