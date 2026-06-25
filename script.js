@@ -48,6 +48,7 @@ searchBar.addEventListener("keydown", async function(keypress){
     return;
 }
     const result = createPokemonCard(searchResult.name, searchResult)
+    listSearch.classList.add('single-result');
     listSearch.appendChild(result)
 
 })
@@ -101,6 +102,7 @@ async function renderPokedex() {
     previousUrl = data.previous
     const poke_list = document.querySelector(".poke_list");
     poke_list.innerHTML = "";
+    poke_list.classList.remove('single-result');
 
     for (let pokemon of data.results) {
         const details = await fetchPokemonDetails(pokemon.url);

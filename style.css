@@ -22,6 +22,12 @@ button{
     gap: 10px;
     border: 1px solid black;
     border-collapse: collapse;
+    justify-content: center;
+}
+
+.poke_list.single-result {
+    display: flex;
+    justify-content: center;
 }
 
 .poke-card {
