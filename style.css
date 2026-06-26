@@ -1,26 +1,114 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&display=swap');
+
+
+.electrolize-regular {
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+    font-family: "Electrolize", normal, sans-serif;
+    font-size: larger;
+    background-color: #0d1117;
+    color: #f0f0f0
+
+}
+
 .header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor:pointer;
+    padding: 1em;
+    position: relative;
+    overflow: hidden;
+    min-height: 10em;
+}
+
+.header-bg-r {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right;
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.header-bg-l {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left;
+    opacity: 0.8;
+    z-index: 0;
+}
+
+
+.header img:last-child {
+    position: relative;
+    z-index: 1;
 }
 
 .btns{
     display:flex;
-    justify-content: center;
+    justify-content: space-between;
     margin-bottom: 1em;
 }
 
-button{
+#previous, #next {
     width: 120px;
+    height: 30px;
+    background-color: #2B3BA0;
+    color: #f0f0f0;
+    border-radius: 0.625em;
+    border:none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#previous:hover, #next:hover {
+    background-color: #3D6EFF;
+}
+
+#searchPoke {
+    flex: 1;
+    max-width: 500px;
+    height: 30px;
+    text-align: center;
+    background-color: #1b202c;
+    border-radius: 8px;
+    border: none;
+    color: #f0f0f0;
+    transition: box-shadow 0.2s ease;
+
+}
+#searchPoke:focus {
+    flex: 1;
+    max-width: 500px;
+    height: 30px;
+    text-align: left;
+    background-color: #1b202c;
+    border-radius: 8px;
+    border: none;
+    color: #f0f0f0;
+    outline:none;
+    padding-left: 0.75em;
+    box-shadow: 0 0 0.75em rgba(61, 110, 255, 0.7);
 }
 
 .poke_list {
     display: grid;
     grid-template-columns: repeat(5,1fr);
-    gap: 10px;
-    border: 1px solid black;
+    gap: 0.625em;
     border-collapse: collapse;
     justify-content: center;
 }
@@ -31,31 +119,46 @@ button{
 }
 
 .poke-card {
+    min-width: 0;
     display: flex;
-    flex-direction: column;  
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    height: 170px;
+    padding: 0.625em;
+    height: 10.625em;
     box-sizing: border-box;
-    border: 1px solid darkslategray;
-    border-radius : 10px;
+    border: 1px solid #FFCC00;
+    border-radius: 0.625em;
+    box-shadow: 0 0 0.5em rgba(255, 204, 0, 0.3);
+    background-color: #272626;
+    transition: box-shadow 0.2s ease border-color 0.2s ease;
+    background: linear-gradient(180deg, #2b3a5a, #272626);
+}
+
+.poke-card:hover {
+    border-color: #3D6EFF;
+    box-shadow: 0 0 1em rgba(61, 110, 255, 0.6);
+    cursor: pointer;
 }
 
 .poke-pic {
-    width: 130px;
-    height: 130px;
+    width: 8.125em;
+    max-width: 100%;
     flex: 1;
+    min-height: 0;
     object-fit: contain;
-    margin-bottom: 10px;
-    
+    margin-bottom: 0.625em;
 }
 
 .poke-text {
     margin: 0;
-    font-family: sans-serif;
     font-weight: bold;
     text-transform: capitalize;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
 }
 
 .popup{
@@ -74,27 +177,63 @@ button{
 
 
 .details-box {          /* just the card's appearance — NO display:none here */
-    background: white;
+    background: #1e2a5e;
+    color: #f0f0f0;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 0.5em;
+    border: 1px solid #FFCC00;
+    background: linear-gradient(180deg, #272626, #1e2a5e);
 }
 
+
 .close-btn {
-    width: auto;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    color: white;
     float: right;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid rgb(27, 27, 27);
+    border-radius: 0.5em;
 }
 
 .detail-img {
-    width: 200px;
-    height: 200px;
+    width: 12.5em;
+    height: 12.5em;
     object-fit: contain;
 }
 
 .not-found{
     grid-column: 1 / -1;      /* span all 5 grid columns, so it centers across the whole row */
     text-align: center;
-    font-family: sans-serif;
     font-size: 1.5rem;
-    color: #b00;              /* a soft red */
+    color: #ff6b4a;           /* orange-red visible sur fond sombre */
     padding: 2rem;
 }
+
+.detail-types { display: flex; gap: 0.375em; margin-top: 0.25em; }
+
+.type-badge {
+    font-size: 0.7rem; color: white; padding: 0.125em 0.5em;
+    border-radius: 0.25em; font-weight: bold;
+}
+.type-normal   { background: #A8A878; }
+.type-fire     { background: #F08030; }
+.type-water    { background: #6890F0; }
+.type-electric { background: #F8D030; color: #333; }
+.type-grass    { background: #78C850; }
+.type-ice      { background: #98D8D8; color: #333; }
+.type-fighting { background: #C03028; }
+.type-poison   { background: #A040A0; }
+.type-ground   { background: #E0C068; color: #333; }
+.type-flying   { background: #A890F0; }
+.type-psychic  { background: #F85888; }
+.type-bug      { background: #A8B820; }
+.type-rock     { background: #B8A038; }
+.type-ghost    { background: #705898; }
+.type-dragon   { background: #7038F8; }
+.type-dark     { background: #705848; }
+.type-steel    { background: #B8B8D0; color: #333; }
+.type-fairy    { background: #EE99AC; }

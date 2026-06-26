@@ -3,7 +3,17 @@ let currentUrl = HOME_URL
 let nextUrl = null
 let previousUrl = null
 
+const TYPE_FR = {
+    normal: 'Normal', fire: 'Feu', water: 'Eau', electric: 'Électrique',
+    grass: 'Plante', ice: 'Glace', fighting: 'Combat', poison: 'Poison',
+    ground: 'Sol', flying: 'Vol', psychic: 'Psy', bug: 'Insecte',
+    rock: 'Roche', ghost: 'Spectre', dragon: 'Dragon', dark: 'Ténèbres',
+    steel: 'Acier', fairy: 'Fée'
+};
 
+
+
+// Crée un élément HTML, lui ajoute une classe et un texte si fournis, et le retourne
 function elMaker(type, className, text){
     const el = document.createElement(type);
     if (className){el.classList.add(className)};
@@ -23,33 +33,40 @@ detailBox.append(closeBtn, insideContent);
 popupWindow.append(detailBox)
 document.body.append(popupWindow)
 
+// Remplit la popup avec les infos du Pokémon cliqué et l'affiche
 function showDetails(details){
-    const name = elMaker("h2", null, `${details.name} (#${details.id})`);
+    const name = elMaker("h2", null, `${details.frenchName || details.name} (#${details.id})`);
+    const englishName = elMaker("p", null, `Nom anglais : ${details.name[0].toUpperCase() + details.name.slice(1)}`)
     const img = elMaker("img", "detail-img");
     img.src = details.sprites.other.dream_world.front_default || details.sprites.front_default;
-    const height = elMaker("p", null, `${details.height/10} m`);
-    const weight = elMaker("p", null, `${details.weight/10} kg`);
-    const types = elMaker("p", null, `Types: ${details.types.map(t => t.type.name).join(", ")}`);
-    insideContent.replaceChildren(name, img, height, weight, types);
+    const height = elMaker("p", null, `Taille : ${details.height/10} m`);
+    const weight = elMaker("p", null, `Poids : ${details.weight/10} kg`);
+    const typesDiv = elMaker('div', 'detail-types');
+    details.types.forEach(t => {
+    const badge = elMaker('span', 'type-badge', TYPE_FR[t.type.name] || t.type.name);
+    badge.classList.add(`type-${t.type.name}`);
+    typesDiv.appendChild(badge)});
+
+    insideContent.replaceChildren(name, englishName, img, height, weight, typesDiv);
     popupWindow.classList.add("open")
 }
 
 const searchBar = document.querySelector("#searchPoke")
 searchBar.addEventListener("keydown", async function(keypress){
-    if (keypress.key !== 'Enter') return;
-    let searchTerm = searchBar.value.toLowerCase().trim();
-    if (searchTerm === ""){renderPokedex(); return}
-    const searchResult =  await fetchPokemonDetails(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`);
-    const listSearch = document.querySelector(".poke_list");
-    listSearch.innerHTML=""
-    if (searchResult === null) {
-    const msg = elMaker("p", "not-found", "No pokémon found");
-    listSearch.appendChild(msg);
-    return;
+if (keypress.key !== 'Enter') return;
+let searchTerm = searchBar.value.toLowerCase().trim();
+if (searchTerm === ""){renderPokedex(); return}
+const searchResult =  await fetchPokemonDetails(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`);
+const listSearch = document.querySelector(".poke_list");
+listSearch.innerHTML=""
+if (searchResult === null) {
+const msg = elMaker("p", "not-found", "Pas de pokémon correspondant à la recherche");
+listSearch.appendChild(msg);
+return;
 }
-    const result = createPokemonCard(searchResult.name, searchResult)
-    listSearch.classList.add('single-result');
-    listSearch.appendChild(result)
+const result = createPokemonCard(searchResult.name, searchResult)
+listSearch.classList.add('single-result');
+listSearch.appendChild(result)
 
 })
 
@@ -61,6 +78,7 @@ header.addEventListener("click", function(){
 
 })
 
+// Récupère une page de 20 Pokémon depuis l'API et retourne la liste avec les URLs suivante/précédente
 async function fetchPokemonList(currentUrl) {
     const url = new URL(currentUrl);        //fait avec Claude pcq ça m'énervait que le previous ne montre pas 20 pokémons si on arrivait au bout
     url.searchParams.set('limit', '20');
@@ -69,14 +87,27 @@ async function fetchPokemonList(currentUrl) {
     if (response?.ok) {
         return await response.json();
     }
+    
 }
 
+// Récupère les détails d'un Pokémon et enrichit l'objet avec son nom français via l'endpoint species
 async function fetchPokemonDetails(url) {
     const response = await fetch(url);
     if(!response.ok) return null;
-    return await response.json();
+    const details = await response.json();
+
+    const speciesRes = await fetch(details.species.url);
+    if (speciesRes.ok) {
+        const species = await speciesRes.json();
+        const frEntry = species.names.find(n => n.language.name === 'fr');
+        if (frEntry) details.frenchName = frEntry.name;
+    }
+
+    return details;
 }
 
+
+// Construit et retourne la carte HTML d'un Pokémon (nom, image, listener pour la popup)
 function createPokemonCard(name, details) {
     const pokePic = details.sprites.other.dream_world.front_default || details.sprites.front_default
     const card = document.createElement('div');
@@ -87,7 +118,7 @@ function createPokemonCard(name, details) {
     img.classList.add('poke-pic');
     text.classList.add('poke-text');
     card.classList.add('poke-card');
-    text.innerText = name;
+    text.innerText = details.frenchName ||name;
 
     card.appendChild(text);
     card.appendChild(img);
@@ -96,6 +127,7 @@ function createPokemonCard(name, details) {
     return card;
 }
 
+// Vide la grille et la remplit avec les 20 Pokémon de la page courante
 async function renderPokedex() {
     const data = await fetchPokemonList(currentUrl);
     nextUrl = data.next
